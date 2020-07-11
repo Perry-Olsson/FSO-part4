@@ -7,17 +7,18 @@ blogsRouter.get('/', (request, response) => {
       .then(blogs => response.json(blogs))
 })
 
-blogsRouter.post('/', (request, response) => {
+blogsRouter.post('/', (request, response, next) => {
     const blog = new Blog(request.body)
 
     blog.save()
       .then(result => response.json(result))
+      .catch(err => next(err))
 })
 
-blogsRouter.delete('/:id', (request, response) => {
+blogsRouter.delete('/:id', (request, response, next) => {
     Blog.findByIdAndRemove(request.params.id)
       .then(() => response.status(204).end())
-      .catch(err => logger.error(err))
+      .catch(err => next(err))
 })
 
 module.exports = blogsRouter

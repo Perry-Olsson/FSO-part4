@@ -4,6 +4,7 @@
   "description": "blog list",
   "main": "index.js",
   "scripts": {
+    "commit": "git add . && git commit -m updates",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": " "
