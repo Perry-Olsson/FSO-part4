@@ -9,7 +9,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "",
-    "demo": "echo \"my argument is $npm_config_first\""
+    "demo": "echo \"my argument is $npm_config_first\"",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.9.22",
     "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0"
   }
 }

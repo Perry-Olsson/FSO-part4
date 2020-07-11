@@ -11,7 +11,7 @@ logger.info('connecting to MongoDB...')
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => logger.info('connected to MongoDB'))
-  .catch(err => logger.error('error connecting to MongoDB: ', error.message))
+  .catch(error => logger.error('error connecting to MongoDB: ', error.message))
 
 app.use(cors())
 app.use(express.json())
