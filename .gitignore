@@ -1,4 +1,7 @@
 node_modules/
+tests/
+
+for_testing.js
 
 .env
 

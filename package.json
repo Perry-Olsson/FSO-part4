@@ -8,7 +8,7 @@
     "push": "git add . && git commit -m \"$npm_config_message\" && git push origin master",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "",
+    "test": "jest --verbose",
     "demo": "echo \"my argument is $npm_config_first\"",
     "lint": "eslint ."
   },
@@ -30,6 +30,10 @@
     "nodemon": "^2.0.4"
   },
   "devDependencies": {
-    "eslint": "^7.4.0"
+    "eslint": "^7.4.0",
+    "jest": "^26.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
