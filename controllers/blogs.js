@@ -48,7 +48,7 @@ blogsRouter.delete('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
 
   if (user.id.toString() !== blog.user.toString())
-    return response.status(401).json({ error: 'Cannot delete blogs that weren\'t posted by you' })
+    return response.status(401).json({ error: 'Cannot remove blogs that weren\'t posted by you' })
   await Blog.findByIdAndRemove(request.params.id)
   response.status(204).end()
 })
