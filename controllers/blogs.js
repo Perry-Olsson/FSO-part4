@@ -35,7 +35,6 @@ blogsRouter.post('/', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
   const blog = { ...request.body }
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { runValidators: true, context: 'query', new: true })
-  console.log(updatedBlog)
   updatedBlog ? response.json(updatedBlog) : response.status(404).json({ type: 'not found', error: 'The blog was not found' })
 })
 
