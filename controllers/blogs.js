@@ -23,24 +23,30 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
   const user = await User.findById(decodedToken.id)
+  const formattedUser = {
+    username: user.username,
+    name: user.name,
+    id: user._id
+  }
 
   const blog = new Blog({ ...body, user: user.id })
   const savedBlog = await blog.save()
-
+  savedBlog._doc.user = formattedUser
+  
   user.blogs = user.blogs.concat(savedBlog.id)
   await user.save()
+  
   response.json(savedBlog)
 })
-
 blogsRouter.put('/:id', async (request, response) => {
   const blog = { ...request.body }
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { runValidators: true, context: 'query', new: true })
+  const updatedBlog = await Blog
+    .findByIdAndUpdate(request.params.id, blog, { runValidators: true, context: 'query', new: true })
   updatedBlog ? response.json(updatedBlog) : response.status(404).json({ type: 'not found', error: 'The blog was not found' })
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  console.log(decodedToken)
   if (!request.token || !decodedToken.id)
     return response.status(401).json({ error: 'Must be logged in to delete posts' })
   const user = await User.findById(decodedToken.id)
@@ -48,8 +54,10 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   if (user.id.toString() !== blog.user.toString())
     return response.status(401).json({ error: 'Cannot remove blogs that weren\'t posted by you' })
+  user.blogs = user.blogs.filter(b => blog.id !== b.toString())
+  await User.findOneAndUpdate({ username: user.username }, user)
   await Blog.findByIdAndRemove(request.params.id)
   response.status(204).end()
 })
 
-module.exports = blogsRouter
+module.exports = blogsRouter  
