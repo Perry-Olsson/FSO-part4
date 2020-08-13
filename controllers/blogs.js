@@ -32,10 +32,10 @@ blogsRouter.post('/', async (request, response) => {
   const blog = new Blog({ ...body, user: user.id })
   const savedBlog = await blog.save()
   savedBlog._doc.user = formattedUser
-  
+
   user.blogs = user.blogs.concat(savedBlog.id)
   await user.save()
-  
+
   response.json(savedBlog)
 })
 blogsRouter.put('/:id', async (request, response) => {
@@ -60,4 +60,4 @@ blogsRouter.delete('/:id', async (request, response) => {
   response.status(204).end()
 })
 
-module.exports = blogsRouter  
+module.exports = blogsRouter
