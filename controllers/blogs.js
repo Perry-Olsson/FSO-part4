@@ -45,6 +45,13 @@ blogsRouter.put('/:id', async (request, response) => {
   updatedBlog ? response.json(updatedBlog) : response.status(404).json({ type: 'not found', error: 'The blog was not found' })
 })
 
+blogsRouter.put('/:id/comments', async (request, response) => {
+  const comment = request.body
+  const commentedBlog = await Blog
+    .findByIdAndUpdate(request.params.id, { $push: comment }, { new: true })
+  commentedBlog ? response.json(commentedBlog) : response.status(404).json({ type: 'not fount', error: 'The blog was not found' })
+})
+
 blogsRouter.delete('/:id', async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!request.token || !decodedToken.id)
