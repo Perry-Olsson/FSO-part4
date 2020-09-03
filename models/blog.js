@@ -2,6 +2,17 @@ const mongoose = require('mongoose')
 
 mongoose.set('useFindAndModify', false)
 
+const commentSchema = mongoose.Schema({
+  comment: {
+    type: String,
+    required: true
+  },
+  user: {
+    type: String,
+    required: true
+  }
+})
+
 const blogSchema = mongoose.Schema({
   title: {
     type: String,
@@ -24,8 +35,15 @@ const blogSchema = mongoose.Schema({
     ref: 'User'
   },
   comments: {
-    type: Array,
+    type: [commentSchema],
     default: []
+  }
+})
+
+commentSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
   }
 })
 

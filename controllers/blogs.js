@@ -45,13 +45,6 @@ blogsRouter.put('/:id', async (request, response) => {
   updatedBlog ? response.json(updatedBlog) : response.status(404).json({ type: 'not found', error: 'The blog was not found' })
 })
 
-blogsRouter.put('/:id/comments', async (request, response) => {
-  const comment = request.body
-  const commentedBlog = await Blog
-    .findByIdAndUpdate(request.params.id, { $push: comment }, { new: true })
-  commentedBlog ? response.json(commentedBlog) : response.status(404).json({ type: 'not fount', error: 'The blog was not found' })
-})
-
 blogsRouter.delete('/:id', async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!request.token || !decodedToken.id)
@@ -64,7 +57,32 @@ blogsRouter.delete('/:id', async (request, response) => {
   user.blogs = user.blogs.filter(b => blog.id !== b.toString())
   await User.findOneAndUpdate({ username: user.username }, user)
   await Blog.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+  return response.status(204).end()
 })
+
+blogsRouter.put('/:id/comments', async (request, response) => {
+  const comment = request.body
+  const commentedBlog = await Blog
+    .findByIdAndUpdate(request.params.id, { $push: { comments: comment } }, { new: true })
+  commentedBlog ? response.json(commentedBlog) : response.status(404).json({ type: 'not fount', error: 'The blog was not found' })
+})
+
+blogsRouter.delete('/:blogId/comments/:commentId', async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!request.token || !decodedToken.id)
+    return response.status(401).json({ error: 'Must be loggin in to delete posts' })
+  const user = await User.findById(decodedToken.id)
+  const blog = await Blog.findById(request.params.blogId)
+  const comment = await blog.comments.id(request.params.commentId)
+
+  if (user.username !== comment.user)
+    return response.status(401).json({ error: 'Cannot remove comments that weren\'t posted by you' })
+
+  comment.remove()
+  await blog.save()
+  return response.status(204).end()
+})
+
+
 
 module.exports = blogsRouter

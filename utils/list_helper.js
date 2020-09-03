@@ -30,8 +30,7 @@ const getTopAuthor = (blogs, metric='blogs') => {
   return returnObject
 }
 
-const dummy = blogs => {
-  console.log(blogs)
+const dummy = () => {
   return 1
 }
 
