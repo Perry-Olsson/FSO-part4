@@ -17,7 +17,6 @@ mongoose
   .then(() => console.log('connected'))
   .catch(() => console.log('not connected'));
 const main = async () => {
-  console.log(process.argv[3]);
   if (process.argv[2] === 'reset') {
     await Blog.deleteMany({});
     await User.deleteMany({});
@@ -38,6 +37,8 @@ const main = async () => {
     const johnyboy = await User.findOne({ username: 'Johnyboy' });
     for (let blog of helper.initialBlogs) {
       const newBlog = new Blog({ ...blog, user: johnyboy._id });
+      johnyboy.blogs.push(newBlog.id);
+      await johnyboy.save();
       await newBlog.save();
     }
   }

@@ -18,7 +18,7 @@ usersRouter.post('/like/:userId/:blogId', async (request, response) => {
   if (user.likes.get(blogId))
     response
       .status(400)
-      .json({ message: 'blog as been liked by this user already' });
+      .json({ error: 'blog as been liked by this user already' });
   console.log(user.likes);
   user.likes.set(blogId, 'true');
   const userForResponse = await user.save();
