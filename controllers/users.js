@@ -12,16 +12,27 @@ usersRouter.get('/', async (request, response) => {
   response.json(users);
 });
 
+usersRouter.post('/like/:userId/:blogId', async (request, response) => {
+  const blogId = request.params.blogId;
+  const user = await User.findById(request.params.userId);
+  if (user.likes.get(blogId))
+    response
+      .status(400)
+      .json({ message: 'blog as been liked by this user already' });
+  console.log(user.likes);
+  user.likes.set(blogId, 'true');
+  const userForResponse = await user.save();
+  response.json(userForResponse);
+});
+
 usersRouter.post('/', async (request, response) => {
   const body = request.body;
 
   if (body.password.length < 3)
-    return response
-      .status(400)
-      .json({
-        error: 'invalid password',
-        message: 'password must be at least 3 characters',
-      });
+    return response.status(400).json({
+      error: 'invalid password',
+      message: 'password must be at least 3 characters',
+    });
 
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(body.password, saltRounds);
