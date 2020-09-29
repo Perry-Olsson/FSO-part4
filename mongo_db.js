@@ -17,7 +17,8 @@ mongoose
   .then(() => console.log('connected'))
   .catch(() => console.log('not connected'));
 const main = async () => {
-  if (process.argv[3] === 'reset') {
+  console.log(process.argv[3]);
+  if (process.argv[2] === 'reset') {
     await Blog.deleteMany({});
     await User.deleteMany({});
 
@@ -34,26 +35,10 @@ const main = async () => {
       await newUser.save();
     }
 
-    const loginTestUser = async () => {
-      const response = await api
-        .post('/api/login')
-        .send({ username: 'testUsername', password: 'testPassword' });
-
-      return response.body;
-    };
-
-    await api.post('/api/users').send({
-      username: 'testUsername',
-      name: 'testName',
-      password: 'testPassword',
-    });
-
-    let userToken = await loginTestUser();
+    const johnyboy = await User.findOne({ username: 'Johnyboy' });
     for (let blog of helper.initialBlogs) {
-      await api
-        .post('/api/blogs')
-        .set('Authorization', `bearer ${userToken.token}`)
-        .send(blog);
+      const newBlog = new Blog({ ...blog, user: johnyboy._id });
+      await newBlog.save();
     }
   }
 };
