@@ -2,6 +2,12 @@ const usersRouter = require('express').Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
+usersRouter.get('/likes/:id', async (request, response) => {
+  const user = await User.findById(request.params.id);
+  console.log(user);
+  response.json({ likes: user.likes });
+});
+
 usersRouter.get('/', async (request, response) => {
   const users = await User.find({}).populate('blogs', {
     author: 1,
